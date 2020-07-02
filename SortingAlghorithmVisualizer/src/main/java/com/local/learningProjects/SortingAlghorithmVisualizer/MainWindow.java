@@ -4,6 +4,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
@@ -16,7 +18,7 @@ import javax.swing.JTextPane;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
-public class MainWindow extends JFrame implements ComponentListener
+public class MainWindow extends JFrame implements ComponentListener, ActionListener
 {
 	private static final long serialVersionUID = -8818973763021032820L;
 	private static final String windowName = "Sorting Alghorithm Visualizer";
@@ -35,9 +37,9 @@ public class MainWindow extends JFrame implements ComponentListener
 	private Viewport viewport;
 	private JPanel controlPanel;
 	private JPanel algorithmPanel;
-	private JPanel problemSizeSubPanel;
-	private JLabel problemSizeLabel;
-	private JTextPane problemSizeTextField;
+	//private JPanel problemSizeSubPanel;
+	//private JLabel problemSizeLabel;
+	//private JTextPane problemSizeTextField;
 	private JButton stopResumeButton;
 	private JButton randomizeButton;
 	private JPanel animationSpeedSliderSubPanel;
@@ -57,16 +59,13 @@ public class MainWindow extends JFrame implements ComponentListener
 		super(windowName);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.setLocation(300,100); 
-		this.setPreferredSize(new Dimension(1000, 500));
-		
 		this.viewport = new Viewport();
 		this.controlPanel = new JPanel(new GridLayout(1, 4));
 		this.algorithmPanel = new JPanel(new GridLayout(1, 6));
-		this.problemSizeSubPanel = new JPanel(new GridLayout(2,1));
+		//this.problemSizeSubPanel = new JPanel(new GridLayout(2,1));
 		this.animationSpeedSliderSubPanel = new JPanel(new GridLayout(2,1));
-		this.problemSizeLabel = new JLabel(problemSizeLabelText, JLabel.CENTER);
-		this.problemSizeTextField = new JTextPane();
+		//this.problemSizeLabel = new JLabel(problemSizeLabelText, JLabel.CENTER);
+		//this.problemSizeTextField = new JTextPane();
 		this.stopResumeButton = new JButton(stopResumeButtonText_a);
 		this.randomizeButton = new JButton(randomizeButtonText);
 		this.animationSpeedSliderLabel = new JLabel(animationSpeedSliderLabelText, JLabel.CENTER);
@@ -89,9 +88,9 @@ public class MainWindow extends JFrame implements ComponentListener
         contentPane.add(algorithmPanel);
         contentPane.add(infoPanel);
         
-        problemSizeSubPanel.add(problemSizeLabel);
-        problemSizeSubPanel.add(problemSizeTextField);
-        controlPanel.add(problemSizeSubPanel);
+        //problemSizeSubPanel.add(problemSizeLabel);
+        //problemSizeSubPanel.add(problemSizeTextField);
+        //controlPanel.add(problemSizeSubPanel);
         controlPanel.add(randomizeButton);
         controlPanel.add(stopResumeButton);
         animationSpeedSliderSubPanel.add(animationSpeedSliderLabel);
@@ -128,6 +127,9 @@ public class MainWindow extends JFrame implements ComponentListener
         layout.putConstraint(SpringLayout.EAST, infoPanel, -10, SpringLayout.EAST, contentPane);
         layout.putConstraint(SpringLayout.WEST, infoPanel, 10, SpringLayout.WEST, contentPane); 
 		
+		this.setLocation(300,100); 
+		this.setPreferredSize(new Dimension(935, 512));
+        this.setMinimumSize(new Dimension(935, 512));
         controlPanel.setMaximumSize(new Dimension(4192, 100));
         algorithmPanel.setMaximumSize(new Dimension(4192, 100));
         infoPanel.setMaximumSize(new Dimension(4192, 100));
@@ -136,12 +138,25 @@ public class MainWindow extends JFrame implements ComponentListener
 	    this.setVisible(true);   
 	    
 	    this.addComponentListener(this);
+	    randomizeButton.addActionListener(this);
 	}
 
 	public void componentResized(ComponentEvent e) 
 	{
 		//dostosuj rozmiar elementów
 		//this.pack();
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		
+		if (e.getSource() == randomizeButton) randomize();
+	}
+	
+	private void randomize()
+	{
+		viewport.randomizeData();
+		viewport.repaint();
 	}
 
 	//unused
