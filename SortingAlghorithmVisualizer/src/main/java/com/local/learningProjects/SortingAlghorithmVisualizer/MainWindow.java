@@ -24,12 +24,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 {
 	private static final long serialVersionUID = -8818973763021032820L;
 	private static final String windowName = "Sorting Alghorithm Visualizer";
-	private static final String problemSizeLabelText = "Problem Size";
+	//private static final String problemSizeLabelText = "Problem Size";
 	private static final String stopButtonText = "Stop";
 	private static final String randomizeButtonText = "Randomize";
 	private static final String animationSpeedSliderLabelText = "Animation Speed";
 	private static final String bubbleSortButtonText = "Bubble sort";
-	private static final String aSortButtonText = "a sort";
+	private static final String selectionSortButtonText = "Selection sort";
 	private static final String bSortButtonText = "b sort";
 	private static final String cSortButtonText = "c sort";
 	private static final String dSortButtonText = "d sort";
@@ -47,7 +47,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JLabel animationSpeedSliderLabel;
 	private JSlider animationSpeedSlider;
 	private JButton bubbleSortButton;
-	private JButton aSortButton;
+	private JButton selectionSortButton;
 	private JButton bSortButton;
 	private JButton cSortButton;
 	private JButton dSortButton;
@@ -72,7 +72,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.animationSpeedSliderLabel = new JLabel(animationSpeedSliderLabelText, JLabel.CENTER);
 		this.animationSpeedSlider = new JSlider(1, 10, 5);
 		this.bubbleSortButton = new JButton(bubbleSortButtonText);
-		this.aSortButton = new JButton(aSortButtonText);
+		this.selectionSortButton = new JButton(selectionSortButtonText);
 		this.bSortButton = new JButton(bSortButtonText);
 		this.cSortButton = new JButton(cSortButtonText);
 		this.dSortButton = new JButton(dSortButtonText);
@@ -103,7 +103,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
         this.controlPanel.add(animationSpeedSliderSubPanel);
         
         this.algorithmPanel.add(bubbleSortButton);
-        this.algorithmPanel.add(aSortButton);
+        this.algorithmPanel.add(selectionSortButton);
         this.algorithmPanel.add(bSortButton);
         this.algorithmPanel.add(cSortButton);
         this.algorithmPanel.add(dSortButton);
@@ -146,12 +146,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    this.bubbleSortButton.addActionListener(this);
 	    this.stopButton.addActionListener(this);
 	    this.animationSpeedSlider.addChangeListener(this);
+	    this.selectionSortButton.addActionListener(this);
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == this.randomizeButton) this.randomize();
 		if (e.getSource() == this.bubbleSortButton) this.viewport.startBubbleSort();
+		if (e.getSource() == this.selectionSortButton) this.viewport.startSelectionSort();
 		if (e.getSource() == this.stopButton) this.viewport.stopSolving();
 	}
 	

@@ -18,6 +18,7 @@ public class Viewport extends JPanel
 	
 	private enum sortingAlghorithm {
 		BUBBLE_SORT,
+		SELECTION_SORT,
 		NONE;
 	}
 	
@@ -29,6 +30,10 @@ public class Viewport extends JPanel
 	
 	private int bubbleSort_i;
 	private boolean bubbleSort_completeFlag;
+	
+	private int selectionSort_i;
+	private int selectionSort_j;
+	private int selectionSort_smallest;
 	
 	Timer solveClock;
 	ActionListener taskPerformer;
@@ -136,6 +141,9 @@ public class Viewport extends JPanel
 		case BUBBLE_SORT:
 			step_BubbleSort();
 			break;
+		case SELECTION_SORT:
+			 step_SelcetionSort();
+			 break;
 		case NONE:
 			break;
 		default:
@@ -148,6 +156,19 @@ public class Viewport extends JPanel
 		this.currentAlgorithm = sortingAlghorithm.BUBBLE_SORT;
 		this.bubbleSort_i = 0;
 		this.bubbleSort_completeFlag = true;
+		this.highlightedBlue.clear();
+		this.highlightedGreen.clear();
+		this.solveClock.restart();
+	}
+	
+	public void startSelectionSort()
+	{
+		this.currentAlgorithm = sortingAlghorithm.SELECTION_SORT;
+		this.selectionSort_i = 0;
+		this.selectionSort_j = 0;
+		this.selectionSort_smallest = 0;
+		this.highlightedBlue.clear();
+		this.highlightedGreen.clear();
 		this.solveClock.restart();
 	}
 	
@@ -209,6 +230,48 @@ public class Viewport extends JPanel
 		
 		//set highlight on all previous if all are in proper order
 		if ((bubbleSort_completeFlag) & (bubbleSort_i > 0)) highlightedGreen.add(bubbleSort_i - 1);
+		
+		this.repaint();
+	}
+	
+	private void step_SelcetionSort() 
+	{
+		//if checked all
+		if (this.selectionSort_j == this.data.length - 1)
+		{
+			//swap smallest value with first of unsorted
+			int temp = this.data[this.selectionSort_smallest];
+			this.data[this.selectionSort_smallest] = this.data[this.selectionSort_i];
+			this.data[this.selectionSort_i] = temp;
+			
+			//update highlight, increment unsolved section index and update moving index
+			this.highlightedGreen.add(this.selectionSort_i);
+			this.selectionSort_i++;
+			this.selectionSort_j = this.selectionSort_i;
+			this.selectionSort_smallest = this.selectionSort_i;
+			
+			if (this.selectionSort_i == this.data.length - 1)
+			{
+				this.highlightedGreen.add(this.selectionSort_i);
+				this.finish();
+			}
+		} else {
+			//increment moving index and check if smallest
+			this.selectionSort_j++;
+			
+			if (this.data[this.selectionSort_j] < this.data[this.selectionSort_smallest])
+			{
+				this.selectionSort_smallest = this.selectionSort_j;
+			}
+		}
+		
+		//set highlight on current element
+		this.highlightedBlue.clear();
+		if (this.selectionSort_i != this.data.length - 1)
+		{
+			this.highlightedBlue.add(this.selectionSort_j);
+			this.highlightedBlue.add(this.selectionSort_smallest);
+		}
 		
 		this.repaint();
 	}
