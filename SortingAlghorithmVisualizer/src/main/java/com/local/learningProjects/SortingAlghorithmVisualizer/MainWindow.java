@@ -17,14 +17,15 @@ import javax.swing.JSlider;
 import javax.swing.JTextPane;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-public class MainWindow extends JFrame implements ComponentListener, ActionListener
+public class MainWindow extends JFrame implements ActionListener, ChangeListener
 {
 	private static final long serialVersionUID = -8818973763021032820L;
 	private static final String windowName = "Sorting Alghorithm Visualizer";
 	private static final String problemSizeLabelText = "Problem Size";
-	private static final String stopResumeButtonText_a = "Resume";
-	private static final String stopResumeButtonText_b = "Stop";
+	private static final String stopButtonText = "Stop";
 	private static final String randomizeButtonText = "Randomize";
 	private static final String animationSpeedSliderLabelText = "Animation Speed";
 	private static final String bubbleSortButtonText = "Bubble sort";
@@ -40,7 +41,7 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
 	//private JPanel problemSizeSubPanel;
 	//private JLabel problemSizeLabel;
 	//private JTextPane problemSizeTextField;
-	private JButton stopResumeButton;
+	private JButton stopButton;
 	private JButton randomizeButton;
 	private JPanel animationSpeedSliderSubPanel;
 	private JLabel animationSpeedSliderLabel;
@@ -66,10 +67,10 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
 		this.animationSpeedSliderSubPanel = new JPanel(new GridLayout(2,1));
 		//this.problemSizeLabel = new JLabel(problemSizeLabelText, JLabel.CENTER);
 		//this.problemSizeTextField = new JTextPane();
-		this.stopResumeButton = new JButton(stopResumeButtonText_a);
+		this.stopButton = new JButton(stopButtonText);
 		this.randomizeButton = new JButton(randomizeButtonText);
 		this.animationSpeedSliderLabel = new JLabel(animationSpeedSliderLabelText, JLabel.CENTER);
-		this.animationSpeedSlider = new JSlider();
+		this.animationSpeedSlider = new JSlider(1, 10, 5);
 		this.bubbleSortButton = new JButton(bubbleSortButtonText);
 		this.aSortButton = new JButton(aSortButtonText);
 		this.bSortButton = new JButton(bSortButtonText);
@@ -77,7 +78,11 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
 		this.dSortButton = new JButton(dSortButtonText);
 		this.eSortButton = new JButton(eSortButtonText);
 		this.infoPanel = new JPanel(new FlowLayout());
-		this.infoLabel = new JLabel("test label", JLabel.CENTER);
+		this.infoLabel = new JLabel("", JLabel.CENTER);
+		
+		this.animationSpeedSlider.setMinorTickSpacing(1);
+		this.animationSpeedSlider.setMajorTickSpacing(3);
+		this.animationSpeedSlider.setPaintLabels(true);
 		
 		Container contentPane = this.getContentPane();
         SpringLayout layout = new SpringLayout();
@@ -91,20 +96,20 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
         //problemSizeSubPanel.add(problemSizeLabel);
         //problemSizeSubPanel.add(problemSizeTextField);
         //controlPanel.add(problemSizeSubPanel);
-        controlPanel.add(randomizeButton);
-        controlPanel.add(stopResumeButton);
-        animationSpeedSliderSubPanel.add(animationSpeedSliderLabel);
-        animationSpeedSliderSubPanel.add(animationSpeedSlider);
-        controlPanel.add(animationSpeedSliderSubPanel);
+        this.controlPanel.add(randomizeButton);
+        this.controlPanel.add(stopButton);
+        this.animationSpeedSliderSubPanel.add(animationSpeedSliderLabel);
+        this.animationSpeedSliderSubPanel.add(animationSpeedSlider);
+        this.controlPanel.add(animationSpeedSliderSubPanel);
         
-        algorithmPanel.add(bubbleSortButton);
-        algorithmPanel.add(aSortButton);
-        algorithmPanel.add(bSortButton);
-        algorithmPanel.add(cSortButton);
-        algorithmPanel.add(dSortButton);
-        algorithmPanel.add(eSortButton);
+        this.algorithmPanel.add(bubbleSortButton);
+        this.algorithmPanel.add(aSortButton);
+        this.algorithmPanel.add(bSortButton);
+        this.algorithmPanel.add(cSortButton);
+        this.algorithmPanel.add(dSortButton);
+        this.algorithmPanel.add(eSortButton);
         
-        infoPanel.add(infoLabel);
+        this.infoPanel.add(infoLabel);
         
         layout.putConstraint(SpringLayout.WEST, contentPane, -10, SpringLayout.WEST, controlPanel);
         layout.putConstraint(SpringLayout.NORTH, contentPane, -10, SpringLayout.NORTH, controlPanel);
@@ -130,38 +135,39 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
 		this.setLocation(300,100); 
 		this.setPreferredSize(new Dimension(935, 512));
         this.setMinimumSize(new Dimension(935, 512));
-        controlPanel.setMaximumSize(new Dimension(4192, 100));
-        algorithmPanel.setMaximumSize(new Dimension(4192, 100));
-        infoPanel.setMaximumSize(new Dimension(4192, 100));
+        this.controlPanel.setMaximumSize(new Dimension(4192, 100));
+        this.algorithmPanel.setMaximumSize(new Dimension(4192, 100));
+        this.infoPanel.setMaximumSize(new Dimension(4192, 100));
         
 		this.pack();
 	    this.setVisible(true);   
 	    
-	    this.addComponentListener(this);
-	    randomizeButton.addActionListener(this);
-	    bubbleSortButton.addActionListener(this);
-	}
-
-	public void componentResized(ComponentEvent e) 
-	{
-		//dostosuj rozmiar elementów
-		//this.pack();
+	    this.randomizeButton.addActionListener(this);
+	    this.bubbleSortButton.addActionListener(this);
+	    this.stopButton.addActionListener(this);
+	    this.animationSpeedSlider.addChangeListener(this);
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == randomizeButton) randomize();
-		if (e.getSource() == bubbleSortButton) viewport.startBubbleSort();
+		if (e.getSource() == this.randomizeButton) this.randomize();
+		if (e.getSource() == this.bubbleSortButton) this.viewport.startBubbleSort();
+		if (e.getSource() == this.stopButton) this.viewport.stopSolving();
+	}
+	
+	public void stateChanged(ChangeEvent e) 
+	{
+		JSlider source = (JSlider)e.getSource();
+		if (!source.getValueIsAdjusting())
+		{
+			this.viewport.setAnimationTimerDelay(11 - source.getValue());
+		}
 	}
 	
 	private void randomize()
 	{
-		viewport.randomizeData();
-		viewport.repaint();
+		this.viewport.randomizeData();
 	}
 
-	//unused
-	public void componentMoved(ComponentEvent e) {}
-	public void componentShown(ComponentEvent e) {}
-	public void componentHidden(ComponentEvent e) {}
+	//unused	
 }

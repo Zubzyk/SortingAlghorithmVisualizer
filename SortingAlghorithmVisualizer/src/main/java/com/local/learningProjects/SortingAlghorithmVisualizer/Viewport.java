@@ -124,8 +124,10 @@ public class Viewport extends JPanel
 			set.remove(random);
 		}
 		
-		highlightedBlue.clear();
-		highlightedGreen.clear();
+		this.highlightedBlue.clear();
+		this.highlightedGreen.clear();
+		
+		this.repaint();
 	}
 	
 	private void solve()
@@ -143,16 +145,30 @@ public class Viewport extends JPanel
 	
 	public void startBubbleSort()
 	{
-		currentAlgorithm = sortingAlghorithm.BUBBLE_SORT;
-		bubbleSort_i = 0;
-		bubbleSort_completeFlag = true;
-		solveClock.restart();
+		this.currentAlgorithm = sortingAlghorithm.BUBBLE_SORT;
+		this.bubbleSort_i = 0;
+		this.bubbleSort_completeFlag = true;
+		this.solveClock.restart();
 	}
 	
 	private void finish()
 	{
-		currentAlgorithm = sortingAlghorithm.NONE;
-		solveClock.stop();
+		this.currentAlgorithm = sortingAlghorithm.NONE;
+		this.solveClock.stop();
+	}
+	
+	public void setAnimationTimerDelay(int delay)
+	{
+		this.solveClock.setDelay(delay);
+	}
+	
+	public void stopSolving()
+	{
+		this.currentAlgorithm = sortingAlghorithm.NONE;
+		this.solveClock.stop();
+		this.highlightedBlue.clear();
+		this.highlightedGreen.clear();
+		this.repaint();
 	}
 	
 	private void step_BubbleSort() 
