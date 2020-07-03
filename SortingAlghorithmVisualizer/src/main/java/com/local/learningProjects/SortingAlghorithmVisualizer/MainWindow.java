@@ -139,6 +139,7 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
 	    
 	    this.addComponentListener(this);
 	    randomizeButton.addActionListener(this);
+	    bubbleSortButton.addActionListener(this);
 	}
 
 	public void componentResized(ComponentEvent e) 
@@ -149,8 +150,8 @@ public class MainWindow extends JFrame implements ComponentListener, ActionListe
 	
 	public void actionPerformed(ActionEvent e)
 	{
-		
 		if (e.getSource() == randomizeButton) randomize();
+		if (e.getSource() == bubbleSortButton) viewport.startBubbleSort();
 	}
 	
 	private void randomize()
