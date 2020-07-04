@@ -30,10 +30,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private static final String animationSpeedSliderLabelText = "Animation Speed";
 	private static final String bubbleSortButtonText = "Bubble sort";
 	private static final String selectionSortButtonText = "Selection sort";
-	private static final String bSortButtonText = "b sort";
-	private static final String cSortButtonText = "c sort";
-	private static final String dSortButtonText = "d sort";
-	private static final String eSortButtonText = "e sort";
+	private static final String insertionSortButtonText = "Insertion sort";
+	private static final String mergeSortButtonText = "Merge sort";
+	private static final String quickSortButtonText = "Quick sort";
+	private static final String heapSortButtonText = "Heap sort";
 	
 	private Viewport viewport;
 	private JPanel controlPanel;
@@ -48,10 +48,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JSlider animationSpeedSlider;
 	private JButton bubbleSortButton;
 	private JButton selectionSortButton;
-	private JButton bSortButton;
-	private JButton cSortButton;
-	private JButton dSortButton;
-	private JButton eSortButton;
+	private JButton insertionSortButton;
+	private JButton mergeSortButton;
+	private JButton quickSortButton;
+	private JButton heapSortButton;
 	private JPanel infoPanel;
 	private JLabel infoLabel;
 	
@@ -73,10 +73,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.animationSpeedSlider = new JSlider(1, 10, 5);
 		this.bubbleSortButton = new JButton(bubbleSortButtonText);
 		this.selectionSortButton = new JButton(selectionSortButtonText);
-		this.bSortButton = new JButton(bSortButtonText);
-		this.cSortButton = new JButton(cSortButtonText);
-		this.dSortButton = new JButton(dSortButtonText);
-		this.eSortButton = new JButton(eSortButtonText);
+		this.insertionSortButton = new JButton(insertionSortButtonText);
+		this.mergeSortButton = new JButton(mergeSortButtonText);
+		this.quickSortButton = new JButton(quickSortButtonText);
+		this.heapSortButton = new JButton(heapSortButtonText);
 		this.infoPanel = new JPanel(new FlowLayout());
 		this.infoLabel = new JLabel("", JLabel.CENTER);
 		
@@ -104,10 +104,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
         
         this.algorithmPanel.add(bubbleSortButton);
         this.algorithmPanel.add(selectionSortButton);
-        this.algorithmPanel.add(bSortButton);
-        this.algorithmPanel.add(cSortButton);
-        this.algorithmPanel.add(dSortButton);
-        this.algorithmPanel.add(eSortButton);
+        this.algorithmPanel.add(insertionSortButton);
+        this.algorithmPanel.add(mergeSortButton);
+        this.algorithmPanel.add(quickSortButton);
+        this.algorithmPanel.add(heapSortButton);
         
         this.infoPanel.add(infoLabel);
         
@@ -147,6 +147,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    this.stopButton.addActionListener(this);
 	    this.animationSpeedSlider.addChangeListener(this);
 	    this.selectionSortButton.addActionListener(this);
+	    this.insertionSortButton.addActionListener(this);
+	    this.mergeSortButton.addActionListener(this);
+	    this.quickSortButton.addActionListener(this);
+	    this.heapSortButton.addActionListener(this);
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -154,6 +158,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		if (e.getSource() == this.randomizeButton) this.randomize();
 		if (e.getSource() == this.bubbleSortButton) this.viewport.startBubbleSort();
 		if (e.getSource() == this.selectionSortButton) this.viewport.startSelectionSort();
+		if (e.getSource() == this.insertionSortButton) this.viewport.startInsertionSort();
+		if (e.getSource() == this.mergeSortButton) this.viewport.startMergeSort();
+		if (e.getSource() == this.quickSortButton) this.viewport.startQuickSort();
+		if (e.getSource() == this.heapSortButton) this.viewport.startHeapSort();
 		if (e.getSource() == this.stopButton) this.viewport.stopSolving();
 	}
 	

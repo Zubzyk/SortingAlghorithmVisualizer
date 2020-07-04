@@ -19,6 +19,10 @@ public class Viewport extends JPanel
 	private enum sortingAlghorithm {
 		BUBBLE_SORT,
 		SELECTION_SORT,
+		INSERTION_SORT,
+		MERGE_SORT,
+		QUICK_SORT,
+		HEAP_SORT,
 		NONE;
 	}
 	
@@ -27,6 +31,7 @@ public class Viewport extends JPanel
 	private int[] data;
 	private HashSet<Integer> highlightedBlue;
 	private HashSet<Integer> highlightedGreen;
+	private HashSet<Integer> highlightedRed;
 	
 	private int bubbleSort_i;
 	private boolean bubbleSort_completeFlag;
@@ -34,6 +39,10 @@ public class Viewport extends JPanel
 	private int selectionSort_i;
 	private int selectionSort_j;
 	private int selectionSort_smallest;
+	
+	private int insertionSort_i;
+	private int insertionSort_j;
+	private boolean insertionSort_flag;
 	
 	Timer solveClock;
 	ActionListener taskPerformer;
@@ -46,6 +55,7 @@ public class Viewport extends JPanel
 		this.data = new int[128];
 		this.highlightedBlue = new HashSet<Integer>();
 		this.highlightedGreen = new HashSet<Integer>();
+		this.highlightedRed = new HashSet<Integer>();
 		
 		randomizeData();
 		
@@ -90,8 +100,10 @@ public class Viewport extends JPanel
 			g2d.fillRect(posX, posY, barWidth, barHeight);
 		}
 		
+		//paint highlights
 		paintHighlighted(g2d, highlightedBlue, Color.BLUE);
 		paintHighlighted(g2d, highlightedGreen, Color.GREEN);
+		paintHighlighted(g2d, highlightedRed, Color.RED);
 	}
 	
 	private void paintHighlighted(Graphics2D g2d, HashSet<Integer> highlighted, Color c) 
@@ -128,9 +140,8 @@ public class Viewport extends JPanel
 			this.data[i] = set.get(random);
 			set.remove(random);
 		}
-		
-		this.highlightedBlue.clear();
-		this.highlightedGreen.clear();
+
+		this.clearHighlights();
 		
 		this.repaint();
 	}
@@ -142,7 +153,19 @@ public class Viewport extends JPanel
 			step_BubbleSort();
 			break;
 		case SELECTION_SORT:
-			 step_SelcetionSort();
+			 step_SelectionSort();
+			 break;
+		case INSERTION_SORT:
+			 step_insertionSort();
+			 break;
+		case MERGE_SORT:
+			 step_mergeSort();
+			 break;
+		case QUICK_SORT:
+			 step_quickSort();
+			 break;
+		case HEAP_SORT:
+			 step_heapSort();
 			 break;
 		case NONE:
 			break;
@@ -156,8 +179,7 @@ public class Viewport extends JPanel
 		this.currentAlgorithm = sortingAlghorithm.BUBBLE_SORT;
 		this.bubbleSort_i = 0;
 		this.bubbleSort_completeFlag = true;
-		this.highlightedBlue.clear();
-		this.highlightedGreen.clear();
+		this.clearHighlights();
 		this.solveClock.restart();
 	}
 	
@@ -167,9 +189,33 @@ public class Viewport extends JPanel
 		this.selectionSort_i = 0;
 		this.selectionSort_j = 0;
 		this.selectionSort_smallest = 0;
-		this.highlightedBlue.clear();
-		this.highlightedGreen.clear();
+		this.clearHighlights();
 		this.solveClock.restart();
+	}
+	
+	public void startInsertionSort()
+	{
+		this.currentAlgorithm = sortingAlghorithm.INSERTION_SORT;
+		this.insertionSort_i = 0;
+		this.insertionSort_j = 0;
+		this.insertionSort_flag = true;
+		this.clearHighlights();
+		this.solveClock.restart();
+	}
+	
+	public void startMergeSort()
+	{
+		
+	}
+	
+	public void startQuickSort()
+	{
+		
+	}
+	
+	public void startHeapSort()
+	{
+		
 	}
 	
 	private void finish()
@@ -187,9 +233,22 @@ public class Viewport extends JPanel
 	{
 		this.currentAlgorithm = sortingAlghorithm.NONE;
 		this.solveClock.stop();
+		this.clearHighlights();
+		this.repaint();
+	}
+	
+	private void clearHighlights() 
+	{
 		this.highlightedBlue.clear();
 		this.highlightedGreen.clear();
-		this.repaint();
+		this.highlightedRed.clear();
+	}
+	
+	private void swapDataEntries(int index_1, int index_2)
+	{
+		int tmp_data = data[index_1];
+		data[index_1] = data[index_2];
+		data[index_2] = tmp_data;
 	}
 	
 	private void step_BubbleSort() 
@@ -214,9 +273,7 @@ public class Viewport extends JPanel
 		} else 
 		{
 			//if data is placed incorrectly swap
-			int tmp_data = data[bubbleSort_i];
-			data[bubbleSort_i] = data[bubbleSort_i + 1];
-			data[bubbleSort_i + 1] = tmp_data;
+			this.swapDataEntries(bubbleSort_i, bubbleSort_i + 1);
 			
 			//set flag indicating something was not in proper order
 			bubbleSort_completeFlag = false;
@@ -234,15 +291,13 @@ public class Viewport extends JPanel
 		this.repaint();
 	}
 	
-	private void step_SelcetionSort() 
+	private void step_SelectionSort() 
 	{
 		//if checked all
 		if (this.selectionSort_j == this.data.length - 1)
 		{
 			//swap smallest value with first of unsorted
-			int temp = this.data[this.selectionSort_smallest];
-			this.data[this.selectionSort_smallest] = this.data[this.selectionSort_i];
-			this.data[this.selectionSort_i] = temp;
+			this.swapDataEntries(selectionSort_i, selectionSort_smallest);
 			
 			//update highlight, increment unsolved section index and update moving index
 			this.highlightedGreen.add(this.selectionSort_i);
@@ -267,12 +322,94 @@ public class Viewport extends JPanel
 		
 		//set highlight on current element
 		this.highlightedBlue.clear();
+		this.highlightedRed.clear();
 		if (this.selectionSort_i != this.data.length - 1)
 		{
 			this.highlightedBlue.add(this.selectionSort_j);
-			this.highlightedBlue.add(this.selectionSort_smallest);
+			this.highlightedRed.add(this.selectionSort_smallest);
 		}
 		
 		this.repaint();
+	}
+	
+	private void step_insertionSort()
+	{
+		//if found position of element
+		if (this.insertionSort_flag)
+		{
+			this.insertionSort_flag = false;
+			this.insertionSort_j = this.insertionSort_i;
+			this.insertionSort_i++;
+			
+			if (this.insertionSort_i == this.data.length)
+			{
+				this.finish();
+				this.highlightedRed.clear();
+				this.highlightedBlue.clear();
+				this.highlightedGreen.add(this.insertionSort_i - 1);
+			} else
+			{
+				//clear red highlights, add blue highlight to new searched element, add green highlight to previous blue element
+				this.highlightedRed.clear();
+				this.highlightedBlue.clear();
+				this.highlightedBlue.add(this.insertionSort_i);
+				this.highlightedGreen.add(this.insertionSort_i - 1);
+			}
+		} else
+		{
+			if (this.data[this.insertionSort_j] <= this.data[this.insertionSort_i] )
+			{
+				this.insertionSort_flag = true;
+				
+				int temp = this.data[this.insertionSort_i];
+				
+				//shift data entries to right
+				for (int i = this.insertionSort_i; i > this.insertionSort_j + 1; i--)
+				{
+					this.data[i] = data[i-1];
+				}
+				
+				this.data[this.insertionSort_j + 1] = temp;
+			} else
+			{
+				this.insertionSort_j--;
+				
+				if (this.insertionSort_j < 0) 
+				{
+					this.insertionSort_j = 0;
+					this.insertionSort_flag = true;
+					
+					int temp = this.data[this.insertionSort_i];
+					
+					//shift data entries to right
+					for (int i = this.insertionSort_i; i > this.insertionSort_j; i--)
+					{
+						this.data[i] = data[i-1];
+					}
+					
+					this.data[this.insertionSort_j] = temp;
+				}
+			}
+			
+		}
+		
+		if (this.insertionSort_i != this.data.length) this.highlightedRed.add(this.insertionSort_j);
+		
+		this.repaint();
+	}
+	
+	private void step_mergeSort()
+	{
+		
+	}
+	
+	private void step_quickSort()
+	{
+		
+	}
+	
+	private void step_heapSort()
+	{
+		
 	}
 }
